@@ -25,6 +25,7 @@ public class Serie implements Serializable {
     private long idSerie;
 
     private String titulo;
+    private String descricao;
 
     private int numeroTemporadas;
 

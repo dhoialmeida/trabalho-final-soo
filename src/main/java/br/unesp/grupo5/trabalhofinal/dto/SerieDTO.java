@@ -9,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SerieDTO {
     private String titulo;
+    private String descricao;
     private int numeroTemporadas;
     private Long idGenero;
     private int duracaoMediaEpisodios;

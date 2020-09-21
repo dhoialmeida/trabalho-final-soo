@@ -2,8 +2,6 @@ package br.unesp.grupo5.trabalhofinal.resource;
 
 import br.unesp.grupo5.trabalhofinal.entity.ConteudoFilme;
 import br.unesp.grupo5.trabalhofinal.service.ConteudoFilmeService;
-import br.unesp.grupo5.trabalhofinal.service.GeneroService;
-import br.unesp.grupo5.trabalhofinal.service.SerieService;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;

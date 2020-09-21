@@ -25,12 +25,15 @@
                 </div>
             </header>
 
-            <h1 class="jumbotron-heading">Filmes</h1>
+            <h1 class="jumbotron-heading">{{serie.titulo}}</h1>
 
             <div class="album py-5">
                 <div class="container">
-                    <div class="row">
-                        <div class="col-md-4" v-for="c in conteudos">
+                    <div class="row" v-for="t in temporadas">
+                        <div class="col-md-12">
+                            <h3>{{t}}ª Temporada</h3>
+                        </div>
+                        <div class="col-md-3" v-for="c in episodios[t]">
                             <div class="card mb-4 box-shadow bg-dark">
                                 <img class="card-img-top" src="/img/thumb.jpg" alt="Card image cap">
                                 <div class="card-body">
@@ -62,17 +65,37 @@
 var app = new Vue({
     el: '#app',
     data: {
-        conteudos: []
+        serie: "",
+        temporadas: [],
+        episodios: {}
     }
 });
 
+const urlParams = new URLSearchParams(window.location.search);
+const serie = urlParams.get('serie');
+
 $.ajax({
-    url: "/api/conteudo/filme/",
+    url: "/api/serie/" + serie + "/episodes",
     dataType: "json",
     cache: false
 }).done(function (json) {
-    app.conteudos = json;
+    const temporadas = [];
+    const episodios = {};
+    json.forEach(conteudo => {
+        app.serie = conteudo.serie;
+        if (temporadas.indexOf(conteudo.temporada) < 0) {
+            temporadas.push(conteudo.temporada);
+        }
+        if (episodios[conteudo.temporada] === undefined) {
+            episodios[conteudo.temporada] = [];
+        }
+        episodios[conteudo.temporada].push(conteudo);
+    });
+    
+    app.temporadas = temporadas;
+    app.episodios = episodios;
 });
         </script>
     </body>
 </html>
+

@@ -1,8 +1,11 @@
 package br.unesp.grupo5.trabalhofinal.resource;
 
 import br.unesp.grupo5.trabalhofinal.dto.SerieDTO;
+import br.unesp.grupo5.trabalhofinal.entity.Conteudo;
+import br.unesp.grupo5.trabalhofinal.entity.ConteudoEpisodico;
 import br.unesp.grupo5.trabalhofinal.entity.Genero;
 import br.unesp.grupo5.trabalhofinal.entity.Serie;
+import br.unesp.grupo5.trabalhofinal.service.ConteudoEpisodicoService;
 import br.unesp.grupo5.trabalhofinal.service.GeneroService;
 import br.unesp.grupo5.trabalhofinal.service.SerieService;
 import java.util.List;
@@ -28,6 +31,9 @@ public class SerieResource {
     private SerieService serieService;
 
     @Autowired
+    private ConteudoEpisodicoService conteudoEpisodicoService;
+
+    @Autowired
     private GeneroService generoService;
 
     ModelMapper mapper = new ModelMapper();
@@ -47,6 +53,16 @@ public class SerieResource {
         Serie serie = serieService.getOne(id);
         if (serie != null) {
             return ResponseEntity.ok(serie);
+        }
+        return ResponseEntity.status(404).body(null);
+    }
+
+    @GetMapping("/{id}/episodes")
+    public ResponseEntity<List<ConteudoEpisodico>> getEpisodes(@PathVariable(value = "id") Long id) {
+        Serie serie = serieService.getOne(id);
+        if (serie != null) {
+            List<ConteudoEpisodico> episodios = conteudoEpisodicoService.findBySerie(serie);
+            return ResponseEntity.ok(episodios);
         }
         return ResponseEntity.status(404).body(null);
     }

@@ -4,6 +4,7 @@
         "integrity": {
             "context": "link"
         },
-        "v-for": {}
+        "v-for": {},
+        ":href": {}
     }
 }
