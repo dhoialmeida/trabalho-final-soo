@@ -29,6 +29,8 @@ public class Serie implements Serializable {
 
     private int numeroTemporadas;
 
+    private String thumbnailFile;
+
     @ManyToOne()
     @JoinColumn(name = "genero_idGenero")
     private Genero genero;

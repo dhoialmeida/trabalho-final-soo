@@ -38,6 +38,10 @@ public class Conteudo implements Serializable {
 
     private int duracao;
 
+    private String thumbnailFile;
+
+    private String videoFile;
+
     @ManyToOne()
     @JoinColumn(name = "genero_idGenero")
     private Genero genero;
