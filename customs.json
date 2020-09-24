@@ -5,6 +5,7 @@
             "context": "link"
         },
         "v-for": {},
-        ":href": {}
+        ":href": {},
+        "v-model": {}
     }
 }

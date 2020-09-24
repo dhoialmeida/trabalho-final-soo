@@ -33,7 +33,9 @@
                         <div class="col-md-4" v-for="s in series">
                             <a :href="'/episodios.html?serie='+s.idSerie">
                                 <div class="card mb-4 box-shadow bg-dark">
-                                    <img class="card-img-top" src="/img/thumb.jpg" alt="Card image cap">
+                                    <div class='wrapper'>
+                                        <img class="card-img-top" :src="'/uploaded/serie/thumb/' + (s.thumbnailFile || 'dummy.jpg')" alt="Card image cap" height='240'>
+                                    </div>
                                     <div class="card-body">
                                         <h5 class="card-title">{{ s.titulo }}</h5>
                                         <p class="card-text">{{ s.descricao }}</p>
