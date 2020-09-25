@@ -178,7 +178,9 @@ html.home-landing-page {
   padding: 15px 0 0 0;
 }
 
-
+.temporada-header, .add-episodio {
+    padding-top: 20px;
+}
 /*
  * Header
  */
@@ -238,6 +240,7 @@ html.home-landing-page {
  */
 .mastfoot {
   color: rgba(255, 255, 255, .5);
+  padding-top: 20px;
 }
 
 

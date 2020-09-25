@@ -18,7 +18,6 @@
                     <nav class="nav nav-masthead justify-content-center">
                         <a class="nav-link" href="/filmes.html">Filmes</a>
                         <a class="nav-link" href="/series.html">Series</a>
-                        <a class="nav-link" href="/adicionarVideo.html">Adicionar video</a>
                         <a class="nav-link" href="#">Fazer Login</a>
                         <a class="nav-link" href="#">Cadastrar</a>
                     </nav>
@@ -27,12 +26,18 @@
 
             <h1 class="jumbotron-heading">Filmes</h1>
 
+            <div>
+                <a href="/cadastrar_conteudo.html?tipo=Filme" class='btn btn-md btn-dark'>Cadastrar novo filme</a>
+            </div>
+
             <div class="album py-5">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" v-for="c in conteudos">
                             <div class="card mb-4 box-shadow bg-dark">
-                                <img class="card-img-top" src="/img/thumb.jpg" alt="Card image cap">
+                                <div class='wrapper'>
+                                    <img class="card-img-top" :src="'/uploaded/conteudo/thumb/' + (c.thumbnailFile || 'dummy.jpg')" alt="Card image cap" height='240'>
+                                </div>
                                 <div class="card-body">
                                     <h5 class="card-title">{{ c.titulo }}</h5>
                                     <p class="card-text">{{ c.descricao }}</p>

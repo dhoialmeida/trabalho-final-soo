@@ -4,7 +4,15 @@
         "integrity": {
             "context": "link"
         },
+        "v-if": {},
+        "v-on:click": {},
         "v-for": {},
+        ":src": {
+            "context": "img"
+        },
+        ":max": {
+            "context": "progress"
+        },
         ":href": {},
         "v-model": {}
     }
