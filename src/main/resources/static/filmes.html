@@ -34,18 +34,20 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" v-for="c in conteudos">
-                            <div class="card mb-4 box-shadow bg-dark">
-                                <div class='wrapper'>
-                                    <img class="card-img-top" :src="'/uploaded/conteudo/thumb/' + (c.thumbnailFile || 'dummy.jpg')" alt="Card image cap" height='240'>
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ c.titulo }}</h5>
-                                    <p class="card-text">{{ c.descricao }}</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">{{c.genero.nome}} - {{ c.duracao }} minutos</small>
+                            <a :href="'/conteudo.html?idConteudo=' + c.idConteudo">
+                                <div class="card mb-4 box-shadow bg-dark">
+                                    <div class='wrapper'>
+                                        <img class="card-img-top" :src="'/uploaded/conteudo/thumb/' + (c.thumbnailFile || 'dummy.jpg')" alt="Card image cap" height='240'>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ c.titulo }}</h5>
+                                        <p class="card-text">{{ c.descricao }}</p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <small class="text-muted">{{c.genero.nome}} - {{ c.duracao }} minutos</small>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
                     </div>
                 </div>

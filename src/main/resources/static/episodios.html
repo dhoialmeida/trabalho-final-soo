@@ -31,21 +31,23 @@
                     <div v-for="t in temporadas">
                         <div class="row temporada">
                             <div class="col-md-12 temporada-header">
-                                <h3>{{t}}ª Temporada</h3>
+                                <h3 :id="'temporada' + t">{{t}}ª Temporada</h3>
                             </div>
                             <div class="col-md-3" v-for="c in episodios[t]">
-                                <div class="card mb-4 box-shadow bg-dark">
-                                    <div class='wrapper'>
-                                        <img class="card-img-top" :src="'/uploaded/conteudo/thumb/' + (c.thumbnailFile || 'dummy.jpg')" alt="Card image cap" height='240'>
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ c.titulo }}</h5>
-                                        <p class="card-text">{{ c.descricao }}</p>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <small class="text-muted">{{(c.genero && c.genero.nome || "Undefined")}} - {{ c.duracao }} minutos</small>
+                                <a :href="'/conteudo.html?idConteudo=' + c.idConteudo">
+                                    <div class="card mb-4 box-shadow bg-dark">
+                                        <div class='wrapper'>
+                                            <img class="card-img-top" :src="'/uploaded/conteudo/thumb/' + (c.thumbnailFile || 'dummy.jpg')" alt="Card image cap" height='240'>
+                                        </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ c.titulo }}</h5>
+                                            <p class="card-text">{{ c.descricao }}</p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">{{(c.genero && c.genero.nome || "Undefined")}} - {{ c.duracao }} minutos</small>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             </div>
                         </div>
                         <a class="btn btn-md btn-dark" :href="makeUrl(t)">
@@ -111,8 +113,8 @@ var app = new Vue({
     }
 });
 
-const urlParams = new URLSearchParams(window.location.search);
-const serie = urlParams.get('serie');
+var url = new URL(window.location.href);
+const serie = url.searchParams.get('serie');
 
 $.ajax({
     url: "/api/serie/" + serie,
