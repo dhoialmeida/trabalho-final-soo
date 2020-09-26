@@ -1,5 +1,6 @@
 package br.unesp.grupo5.trabalhofinal.resource;
 
+import br.unesp.grupo5.trabalhofinal.dto.CredenciaisDTO;
 import br.unesp.grupo5.trabalhofinal.dto.UsuarioDTO;
 import br.unesp.grupo5.trabalhofinal.entity.Usuario;
 import br.unesp.grupo5.trabalhofinal.service.UsuarioService;
@@ -9,6 +10,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -26,7 +29,8 @@ public class UsuarioResource {
     private UsuarioService usuarioService;
 
     ModelMapper mapper = new ModelMapper();
-    
+    PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
     @PostConstruct
     public void init() {
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
@@ -59,8 +63,19 @@ public class UsuarioResource {
 
     @PostMapping("/")
     public Usuario save(@RequestBody UsuarioDTO usuarioDTO) {
-        Usuario usuario = usuarioService.save(mapper.map(usuarioDTO, Usuario.class));
+        Usuario usuario = mapper.map(usuarioDTO, Usuario.class);
+        usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
+        usuario = usuarioService.save(usuario);
         return usuario;
+    }
+    
+    @PostMapping("/login")
+    public ResponseEntity<Usuario> login(@RequestBody CredenciaisDTO credenciaisDTO) {
+        Usuario usuario = usuarioService.findByEmail(credenciaisDTO.getEmail());
+        if (usuario != null) {
+            return ResponseEntity.ok(usuario);
+        }
+        return ResponseEntity.status(404).body(null);
     }
 
     @PatchMapping("/{cpf}")
