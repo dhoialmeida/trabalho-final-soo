@@ -14,6 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ComentarioOutputDTO {
+    private long idComentario;
     private String comentario;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
