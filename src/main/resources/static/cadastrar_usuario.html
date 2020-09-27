@@ -8,6 +8,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" />
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <link rel="stylesheet" href="css/main.css">
     </head>
     <body class="" id="main">
@@ -18,8 +19,9 @@
                     <nav class="nav nav-masthead justify-content-center">
                         <a class="nav-link" href="/filmes.html">Filmes</a>
                         <a class="nav-link" href="/series.html">Series</a>
-                        <a class="nav-link" href="#">Fazer Login</a>
-                        <a class="nav-link" href="#">Cadastrar</a>
+                        <a class="nav-link" v-if="user !== null" href="/login.html">Fazer Logout ({{user.sub }})</a>
+                        <a class="nav-link" v-if="user === null" href="/login.html">Fazer Login</a>
+                        <a class="nav-link" v-if="user === null" href="/cadastrar_usuario.html">Cadastrar</a>
                     </nav>
                 </div>
             </header>
@@ -155,30 +157,10 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <script src="js/main.js"></script>
         <script>
-
-//var progressTemplate = null;
-//var thumbUpload = null;
-//var videoUpload = null
-//var url = new URL(window.location.href);
-//var tipo = url.searchParams.get("tipo") || "Filme";
-//var idSerie = url.searchParams.get("idSerie");
-//var serieStr = url.searchParams.get("serieStr");
-//var idGenero = url.searchParams.get("idGenero") || "select1";
-//var temporada = url.searchParams.get("temporada") || 1;
-//var episodio = url.searchParams.get("episodio") || 1;
-//var duracao = url.searchParams.get("duracao") || 90;
-
-            function errorHandler(data) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Erro: ' + JSON.stringify(data),
-                });
-            }
-
             var app = new Vue({
                 el: '#app',
                 data: {
+                    user: getUser(),
                     usuario: {
                         "nome": "",
                         "email": "",
@@ -219,17 +201,10 @@
                                         window.location.href = "/login.html"
                                     }
                                 });
-                            }).fail(errorHandler);
+                            }).fail(handleError);
                         }
                     }
                 },
-//    mounted: function () {
-//        progressTemplate = document.getElementById("progressTemplate");
-//        progressTemplate.parentElement.removeChild(progressTemplate);
-//        progressTemplate.removeAttribute("hidden");
-//        thumbUpload = document.getElementById("thumbSelector");
-//        videoUpload = document.getElementById("videoSelector");
-//    }
             });
         </script>
     </body>

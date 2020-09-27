@@ -18,8 +18,9 @@
                     <nav class="nav nav-masthead justify-content-center">
                         <a class="nav-link" href="/filmes.html">Filmes</a>
                         <a class="nav-link" href="/series.html">Series</a>
-                        <a class="nav-link" href="#">Fazer Login</a>
-                        <a class="nav-link" href="#">Cadastrar</a>
+                        <a class="nav-link" v-if="user !== null" href="/login.html">Fazer Logout ({{user.sub }})</a>
+                        <a class="nav-link" v-if="user === null" href="/login.html">Fazer Login</a>
+                        <a class="nav-link" v-if="user === null" href="/cadastrar_usuario.html">Cadastrar</a>
                     </nav>
                 </div>
             </header>
@@ -71,7 +72,7 @@
                 </footer>
             </div>
 
-            <div id="progressTemplate" class="text-center">
+            <div id="progressTemplate" class="text-center" hidden>
                 <progress id="file" :max="uploadMax" :value="uploadCurrent"> {{ (uploadMax/uploadCurrent * 100).toFixed(2) }}% </progress>
             </div>
         </div>
@@ -97,6 +98,7 @@ var app = new Vue({
         },
         uploadMax: 1,
         uploadCurrent: 1,
+        user: getUser(),
     },
     methods: {
         submitSerie: function () {
@@ -109,6 +111,9 @@ var app = new Vue({
                     method: "POST",
                     data: JSON.stringify(app.serie),
                     contentType: "application/json",
+                    headers: {
+                        "Authorization": getCookie("bearer"),
+                    }
                 }).done(function (data) {
                     var uploadControl = document.getElementById("thumbSelector");
                     app.uploadMax = uploadControl.files[0].size;
@@ -131,6 +136,9 @@ var app = new Vue({
                         method: "POST",
                         processData: false,
                         contentType: false,
+                        headers: {
+                            "Authorization": getCookie("bearer"),
+                        },
                         beforeSend: function (test)
                         {
                             var xhr = $.ajaxSettings.xhr();
@@ -146,20 +154,8 @@ var app = new Vue({
                             title: 'Sucesso',
                             text: 'Série cadastrada!',
                         });
-                    }).fail(function (data) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Erro: ' + JSON.stringify(data),
-                        });
-                    });
-                }).fail(function (data) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Erro: ' + JSON.stringify(data),
-                    });
-                });
+                    }).fail(handleError);
+                }).fail(handleError);
             }
         }
     }
@@ -168,10 +164,13 @@ var app = new Vue({
 $.ajax({
     url: "/api/genero/",
     dataType: "json",
-    cache: false
+    cache: false,
+    headers: {
+        "Authorization": getCookie("bearer"),
+    }
 }).done(function (json) {
     app.generos = json;
-});
+}).fail(handleError);
         </script>
     </body>
 </html>
