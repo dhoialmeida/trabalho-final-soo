@@ -4,6 +4,7 @@ import br.unesp.grupo5.trabalhofinal.entity.Avaliacao;
 import br.unesp.grupo5.trabalhofinal.entity.Conteudo;
 import br.unesp.grupo5.trabalhofinal.entity.Usuario;
 import br.unesp.grupo5.trabalhofinal.repository.AvaliacaoRepository;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,7 @@ public class AvaliacaoService {
     public AvaliacaoService() {
     }
 
-    public Avaliacao findByUsuario(Usuario usuario) {
+    public List<Avaliacao> findByUsuario(Usuario usuario) {
         return repository.findByUsuario(usuario);
     }
 
@@ -26,6 +27,10 @@ public class AvaliacaoService {
 
     public Avaliacao getOne(Long id) {
         return repository.findById(id).orElse(null);
+    }
+
+    public List<Avaliacao> findByConteudo(Conteudo conteudo) {
+        return repository.findByConteudo(conteudo);
     }
 
     public <S extends Avaliacao> S save(S s) {

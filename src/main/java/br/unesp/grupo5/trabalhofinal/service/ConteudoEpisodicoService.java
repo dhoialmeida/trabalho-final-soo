@@ -1,5 +1,7 @@
 package br.unesp.grupo5.trabalhofinal.service;
 
+import br.unesp.grupo5.trabalhofinal.entity.Avaliacao;
+import br.unesp.grupo5.trabalhofinal.entity.Comentario;
 import br.unesp.grupo5.trabalhofinal.entity.ConteudoEpisodico;
 import br.unesp.grupo5.trabalhofinal.entity.Serie;
 import br.unesp.grupo5.trabalhofinal.repository.ConteudoEpisodicoRepository;
@@ -12,6 +14,12 @@ public class ConteudoEpisodicoService {
 
     @Autowired
     private ConteudoEpisodicoRepository repository;
+
+    @Autowired
+    private ComentarioService comentarioService;
+
+    @Autowired
+    private AvaliacaoService avaliacaoService;
 
     public ConteudoEpisodicoService() {
     }
@@ -37,6 +45,17 @@ public class ConteudoEpisodicoService {
     }
 
     public void delete(ConteudoEpisodico t) {
+        List<Comentario> comentarios = comentarioService.findByConteudo(t);
+        List<Avaliacao> avaliacoes = avaliacaoService.findByConteudo(t);
+
+        for (Comentario c : comentarios) {
+            comentarioService.delete(c);
+        }
+
+        for (Avaliacao a : avaliacoes) {
+            avaliacaoService.delete(a);
+        }
+        
         repository.delete(t);
     }
 }

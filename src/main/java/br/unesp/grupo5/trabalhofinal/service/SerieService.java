@@ -1,5 +1,6 @@
 package br.unesp.grupo5.trabalhofinal.service;
 
+import br.unesp.grupo5.trabalhofinal.entity.ConteudoEpisodico;
 import br.unesp.grupo5.trabalhofinal.entity.Serie;
 import br.unesp.grupo5.trabalhofinal.repository.SerieRepository;
 import java.util.List;
@@ -11,6 +12,9 @@ public class SerieService {
 
     @Autowired
     private SerieRepository repository;
+    
+    @Autowired
+    private ConteudoEpisodicoService conteudoEpisodicoService;
 
     public SerieService() {
     }
@@ -36,6 +40,12 @@ public class SerieService {
     }
 
     public void delete(Serie t) {
+        List<ConteudoEpisodico> conteudos = conteudoEpisodicoService.findBySerie(t);
+
+        for (ConteudoEpisodico c: conteudos) {
+            conteudoEpisodicoService.delete(c);
+        }
+
         repository.delete(t);
     }
 

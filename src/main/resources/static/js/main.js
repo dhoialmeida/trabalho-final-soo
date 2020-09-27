@@ -18,12 +18,20 @@ function handleError(res) {
                 window.location.href = "/login.html";
             }
         });
+    } else if (res.status === 404) {
+        return Swal.fire({
+            icon: 'error',
+            title: 'Conteúdo não encontrado!',
+            willClose: function () {
+                window.location.href = "/";
+            }
+        });
     } else {
         console.log(res);
         return Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: 'Erro: ' + res,
+            text: 'Erro: ' + JSON.stringify(res),
         });
     }
 }

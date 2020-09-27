@@ -220,24 +220,26 @@ var app = new Vue({
     methods: {
         submitComentario: function () {
             app = this;
-            $.ajax({
-                url: "/api/comentario/",
-                method: "POST",
-                data: JSON.stringify({
-                    idUsuario: app.user.id,
-                    idConteudo: idConteudo,
-                    comentario: app.forms.comentario,
-                }),
-                contentType: "application/json",
-                headers: {
-                    "Authorization": getCookie("bearer"),
-                }
-            }).done(function (res) {
-                res.usuarioNome = res.usuario.nome;
-                res.usuarioIdUsuario = res.usuario.idUsuario;
-                app.comentarios.push(res);
-                app.forms.comentario = "";
-            }).fail(handleError);
+            if (document.getElementById("comentarioForm").reportValidity()) {
+                $.ajax({
+                    url: "/api/comentario/",
+                    method: "POST",
+                    data: JSON.stringify({
+                        idUsuario: app.user.id,
+                        idConteudo: idConteudo,
+                        comentario: app.forms.comentario,
+                    }),
+                    contentType: "application/json",
+                    headers: {
+                        "Authorization": getCookie("bearer"),
+                    }
+                }).done(function (res) {
+                    res.usuarioNome = res.usuario.nome;
+                    res.usuarioIdUsuario = res.usuario.idUsuario;
+                    app.comentarios.push(res);
+                    app.forms.comentario = "";
+                }).fail(handleError);
+            }
         },
         submitAvaliacao: function (n) {
             app = this;
