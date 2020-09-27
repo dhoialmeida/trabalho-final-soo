@@ -53,6 +53,38 @@
                         </div>
                     </div>
                 </div>
+                <div class="d-flex justify-content-center" v-if="loaded.comentarios && fail.comentarios">
+                    <strong>Erro ao carregar os comentários</strong>
+                </div>
+                <div v-if="loaded.comentarios && !fail.comentarios">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <hr>
+                                <h3>Comentários</h3>
+                                <section class="comments">
+                                    <article class="comment" v-for="c in comentarios">
+                                        <div class="comment-body">
+                                            <div class="text">
+                                                <p>{{c.comentario}}</p>
+                                            </div>
+                                            <p class="attribution">{{c.usuarioNome}}, {{c.data}}</p>
+                                        </div>
+                                    </article>
+                                    <p><strong v-if="comentarios.length === 0">Não há comentários. Seja o primeiro!</strong></p>
+                                    <form id="comentarioForm" action="javascript:void(0);" method="POST">
+                                        <div class="form-group">
+                                            <textarea v-model="forms.comentario" id="comentario" name="comentario" type="text" class="form-control" required="required"></textarea>
+                                        </div>
+                                        <div class="form-group text-center">
+                                            <button v-on:click="submitComentario" name="submit" type="submit" class="btn btn-primary">Comentar</button>
+                                        </div>
+                                    </form>
+                                </section>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <footer class="mastfoot mt-auto">
@@ -69,41 +101,86 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <script src="js/main.js"></script>
         <script>
-    var url = new URL(window.location.href);
-    var idConteudo = url.searchParams.get("idConteudo");
+var url = new URL(window.location.href);
+var idConteudo = url.searchParams.get("idConteudo");
 
-    $.ajax({
-        url: "/api/conteudo/" + idConteudo,
-        dataType: "json",
-        cache: false,
-        headers: {
-            "Authorization": getCookie("bearer"),
+$.ajax({
+    url: "/api/conteudo/" + idConteudo,
+    dataType: "json",
+    cache: false,
+    headers: {
+        "Authorization": getCookie("bearer"),
+    },
+}).done(function (json) {
+    app.conteudo = json;
+}).fail(function (res) {
+    handleError(res);
+    app.fail.conteudo = true;
+}).always(function () {
+    app.loaded.conteudo = true;
+});
+
+$.ajax({
+    url: "/api/comentario/on-" + idConteudo,
+    dataType: "json",
+    cache: false,
+    headers: {
+        "Authorization": getCookie("bearer"),
+    },
+}).done(function (json) {
+    app.comentarios = json;
+}).fail(function (res) {
+    handleError(res);
+    app.fail.comentarios = true;
+}).always(function () {
+    app.loaded.comentarios = true;
+});
+
+var app = new Vue({
+    el: '#app',
+    data: {
+        conteudo: {},
+        loaded: {
+            conteudo: false,
+            comentarios: false,
         },
-    }).done(function (json) {
-        app.conteudo = json;
-    }).fail(function (res) {
-        handleError(res);
-        app.fail.conteudo = true;
-    }).always(function () {
-        app.loaded.conteudo = true;
-    });
-
-    var app = new Vue({
-        el: '#app',
-        data: {
-            conteudo: {},
-            loaded: {
-                conteudo: false,
-                comentarios: false,
+        fail: {
+            conteudo: false,
+            comentarios: false,
+        },
+        forms: {
+            comentario: "",
+            avaliacao: {
+                nota: null,
+                comentario: "",
             },
-            fail: {
-                conteudo: false,
-                comentarios: false,
-            },
-            comentarios: [],
-            user: getUser(),
-        }
-    });
+        },
+        comentarios: [],
+        user: getUser(),
+    },
+    methods: {
+        submitComentario: function () {
+            app = this;
+            $.ajax({
+                url: "/api/comentario/",
+                method: "POST",
+                data: JSON.stringify({
+                    idUsuario: app.user.id,
+                    idConteudo: idConteudo,
+                    comentario: app.forms.comentario,
+                }),
+                contentType: "application/json",
+                headers: {
+                    "Authorization": getCookie("bearer"),
+                }
+            }).done(function (res) {
+                res.usuarioNome = res.usuario.nome;
+                app.comentarios.push(res);
+                app.forms.comentario = "";
+            }).fail(handleError);
+        },
+    }
+});
         </script>
     </body>
 </html>

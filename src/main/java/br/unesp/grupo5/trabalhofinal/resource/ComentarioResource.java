@@ -1,6 +1,7 @@
 package br.unesp.grupo5.trabalhofinal.resource;
 
 import br.unesp.grupo5.trabalhofinal.dto.ComentarioDTO;
+import br.unesp.grupo5.trabalhofinal.dto.ComentarioOutputDTO;
 import br.unesp.grupo5.trabalhofinal.entity.Comentario;
 import br.unesp.grupo5.trabalhofinal.entity.Conteudo;
 import br.unesp.grupo5.trabalhofinal.entity.Usuario;
@@ -9,6 +10,7 @@ import br.unesp.grupo5.trabalhofinal.service.ConteudoService;
 import br.unesp.grupo5.trabalhofinal.service.UsuarioService;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -36,11 +38,12 @@ public class ComentarioResource {
     @Autowired
     private ConteudoService conteudoService;
 
-    ModelMapper mapper = new ModelMapper();
-    
+    ModelMapper inputMapper = new ModelMapper();
+    ModelMapper outputMapper = new ModelMapper();
+
     @PostConstruct
     public void init() {
-        mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        inputMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
     }
 
     @GetMapping("/{id}")
@@ -53,12 +56,12 @@ public class ComentarioResource {
     }
     
     @GetMapping("/on-{id}")
-    public ResponseEntity<List<Comentario>> findByConteudo(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<List<ComentarioOutputDTO>> findByConteudo(@PathVariable(value = "id") Long id) {
         Conteudo conteudo = conteudoService.getOne(id);
         if (conteudo != null) {
-            List<Comentario> comentario = comentarioService.findByConteudo(conteudo);
-            if (comentario != null) {
-                return ResponseEntity.ok(comentario);
+            List<ComentarioOutputDTO> comentarios = comentarioService.findByConteudo(conteudo).stream().map(c -> outputMapper.map(c, ComentarioOutputDTO.class)).collect(Collectors.toList());
+            if (comentarios != null) {
+                return ResponseEntity.ok(comentarios);
             }
         }
         return ResponseEntity.status(404).body(null);
@@ -88,7 +91,7 @@ public class ComentarioResource {
         }
 
         Comentario comentario = new Comentario();
-        mapper.map(comentarioDTO, comentario);
+        inputMapper.map(comentarioDTO, comentario);
         comentario.setConteudo(conteudo);
         comentario.setUsuario(usuario);
         comentario.setData(LocalDateTime.now());
@@ -100,7 +103,7 @@ public class ComentarioResource {
     public ResponseEntity<Comentario> update(@PathVariable(value = "id") Long id, @RequestBody ComentarioDTO comentarioDTO) {
         Comentario comentario = comentarioService.getOne(id);
         if (comentario != null) {
-            mapper.map(comentarioDTO, comentario);
+            inputMapper.map(comentarioDTO, comentario);
             comentario = comentarioService.update(comentario);
             return ResponseEntity.ok(comentario);
         }

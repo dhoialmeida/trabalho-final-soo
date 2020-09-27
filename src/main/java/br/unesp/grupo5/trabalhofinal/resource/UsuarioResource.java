@@ -30,11 +30,6 @@ public class UsuarioResource {
     ModelMapper mapper = new ModelMapper();
     PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-    @PostConstruct
-    public void init() {
-        // mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-    }
-
     @GetMapping("/")
     public List<Usuario> getAll() {
         return usuarioService.findAll();

@@ -181,6 +181,23 @@ html.home-landing-page {
 .temporada-header, .add-episodio {
     padding-top: 20px;
 }
+
+.comment-body .text {
+    background-color: #403b3b;
+    padding: 3px;
+    margin: 0;
+    border-radius: 3px;
+}
+
+.comment-body .text > * {
+    margin: 0;
+}
+
+.comment-body .attribution {
+   font-weight: bold;
+   text-align: right;
+}
+
 /*
  * Header
  */
