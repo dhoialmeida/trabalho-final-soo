@@ -36,10 +36,6 @@ public class CartaoCredito implements Serializable {
 
     private String titular;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "endereco_idEndereco")
-    private Endereco endereco;
-
     private String expiracao;
 
     private String CVV;

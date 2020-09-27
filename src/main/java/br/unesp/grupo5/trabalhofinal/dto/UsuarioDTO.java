@@ -18,8 +18,10 @@ public class UsuarioDTO {
     private String nome;
     private String email;
     private String senha;
+    private String novaSenha;
+    private boolean alterarSenha;
     private String cpf;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate nascimento;
@@ -33,11 +35,6 @@ public class UsuarioDTO {
 
     private String cartaoCreditoNumero;
     private String cartaoCreditoTitular;
-    private String cartaoCreditoEnderecoNumero;
-    private String cartaoCreditoEnderecoBairro;
-    private String cartaoCreditoEnderecoCep;
-    private String cartaoCreditoEnderecoCidade;
-    private String cartaoCreditoEnderecoEstado;
     private String cartaoCreditoExpiracao;
     private String cartaoCreditoCVV;
     private String cartaoCreditoBandeira;
