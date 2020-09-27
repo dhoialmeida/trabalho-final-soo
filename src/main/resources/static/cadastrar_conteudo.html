@@ -46,8 +46,16 @@
                         <input v-model="conteudo.duracao" id="duracao" name="number" type="text" required="required" class="form-control">
                     </div>
                     <div v-if="tipoConteudo==='Filme'" class="form-group">
-                        <label for="idGenero">Gênero</label> 
-                        <div>
+                        <label for="idGenero">Gênero</label>
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <a v-on:click="createGenero" href="javascript:void()" class="btn btn-sm btn-dark">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-plus-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                                    <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                    </svg>
+                                </a>
+                            </div>
                             <select v-model="conteudo.idGenero" id="idGenero" name="idGenero" class="custom-select" required="required">
                                 <option value="select1" selected disabled>Selecionar</option>
                                 <option v-for="g in generos" :value="g.idGenero">{{ g.idGenero }} - {{ g.nome }}</option>
@@ -95,7 +103,7 @@
                 </footer>
             </div>
 
-            <div id="progressTemplate" class="text-center">
+            <div id="progressTemplate" class="text-center" hidden>
                 <progress id="file" :max="uploadMax" :value="uploadCurrent"> {{ (uploadMax/uploadCurrent * 100).toFixed(2) }}% </progress>
             </div>
         </div>
@@ -213,6 +221,36 @@ var app = new Vue({
                     }).fail(handleError);
                 }).fail(handleError);
             }
+        },
+        createGenero: function () {
+            app = this;
+            Swal.fire({
+                title: 'Gênero:',
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Cadastrar',
+                showLoaderOnConfirm: true,
+                preConfirm: function (nome) {
+                    return $.ajax({
+                        url: "/api/genero/",
+                        contentType: "application/json",
+                        method: "POST",
+                        data: JSON.stringify({nome: nome}),
+                        headers: {
+                            "Authorization": getCookie("bearer"),
+                        }
+                    }).done(function (res) {
+                        app.generos.push(res);
+                        app.conteudo.idGenero = res.idGenero;
+                        return res;
+                    }).catch(handleError);
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+            });
         }
     },
     mounted: function () {
