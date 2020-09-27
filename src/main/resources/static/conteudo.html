@@ -234,6 +234,7 @@ var app = new Vue({
                 }
             }).done(function (res) {
                 res.usuarioNome = res.usuario.nome;
+                res.usuarioIdUsuario = res.usuario.idUsuario;
                 app.comentarios.push(res);
                 app.forms.comentario = "";
             }).fail(handleError);
