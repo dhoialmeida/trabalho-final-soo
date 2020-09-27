@@ -2,6 +2,7 @@
     "elements": {},
     "attributes": {
         "v-bind:class": {},
+        ":disabled": {},
         "integrity": {
             "context": "link"
         },
@@ -16,6 +17,7 @@
             "context": "progress"
         },
         ":href": {},
+        ":required": {},
         "v-model": {}
     }
 }

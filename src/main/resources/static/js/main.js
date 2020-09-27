@@ -10,7 +10,7 @@ function getCookie(name) {
 
 function handleError(res) {
     if (res.status === 403) {
-        Swal.fire({
+        return Swal.fire({
             icon: 'error',
             title: 'Acesso negado',
             text: 'Faça login para continuar',
@@ -19,7 +19,7 @@ function handleError(res) {
             }
         });
     } else {
-        Swal.fire({
+        return Swal.fire({
             icon: 'error',
             title: 'Oops...',
             text: 'Erro: ' + res.responseText,

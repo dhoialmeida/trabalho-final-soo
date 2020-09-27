@@ -25,10 +25,10 @@
                 </div>
             </header>
 
-            <h1 class="jumbotron-heading text-center">Cadastrar {{ tipoConteudo }}</h1>
+            <h1 class="jumbotron-heading text-center">{{ acao }} {{ tipoConteudo }}</h1>
 
             <div class="container">
-                <form id="conteudoForm" action="javascript:void(0);" method="POST" enctype="multipart/form-data">
+                <form id="conteudoForm" action="javascript:void(0);" method="POST" enctype="multipart/form-data" :disabled="acao === 'Alterar' && !load">
                     <div class="form-group">
                         <label for="titulo">Título</label> 
                         <input v-model="conteudo.titulo" id="titulo" name="titulo" type="text" class="form-control" required="required">
@@ -57,7 +57,7 @@
                                 </a>
                             </div>
                             <select v-model="conteudo.idGenero" id="idGenero" name="idGenero" class="custom-select" required="required">
-                                <option value="select1" selected disabled>Selecionar</option>
+                                <option value="select1" disabled>Selecionar</option>
                                 <option v-for="g in generos" :value="g.idGenero">{{ g.idGenero }} - {{ g.nome }}</option>
                             </select>
                         </div>
@@ -82,13 +82,13 @@
                     <div class="form-group">
                         <label for="thumbSelector">Thumbnail</label> 
                         <div>
-                            <input id="thumbSelector" name="thumbSelector" class="custom-select" required="required" type="file">
+                            <input id="thumbSelector" name="thumbSelector" class="custom-select" :required='acao === "Cadastrar"' type="file">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="thumbSelector">Video</label> 
                         <div>
-                            <input id="videoSelector" name="videoSelector" class="custom-select" required="required" type="file">
+                            <input id="videoSelector" name="videoSelector" class="custom-select" :required='acao === "Cadastrar"' type="file">
                         </div>
                     </div>
                     <div class="form-group text-center">
@@ -101,10 +101,6 @@
                         <p>Carlostream₢</p>
                     </div>
                 </footer>
-            </div>
-
-            <div id="progressTemplate" class="text-center" hidden>
-                <progress id="file" :max="uploadMax" :value="uploadCurrent"> {{ (uploadMax/uploadCurrent * 100).toFixed(2) }}% </progress>
             </div>
         </div>
 
@@ -120,6 +116,8 @@ var progressTemplate = null;
 var thumbUpload = null;
 var videoUpload = null
 var url = new URL(window.location.href);
+var acao = url.searchParams.get("acao") || "Cadastrar";
+var idConteudo = url.searchParams.get("idConteudo") || "";
 var tipo = url.searchParams.get("tipo") || "Filme";
 var idSerie = url.searchParams.get("idSerie");
 var serieStr = url.searchParams.get("serieStr");
@@ -127,17 +125,6 @@ var idGenero = url.searchParams.get("idGenero") || "select1";
 var temporada = url.searchParams.get("temporada") || 1;
 var episodio = url.searchParams.get("episodio") || 1;
 var duracao = url.searchParams.get("duracao") || 90;
-
-function uploadProgressHandler(app) {
-    return function () {
-        var xhr = $.ajaxSettings.xhr();
-        xhr.upload.addEventListener("progress", function (evt) {
-            if (evt.lengthComputable) {
-                app.uploadCurrent = evt.loaded;
-            }
-        }, false);
-    }
-}
 
 var app = new Vue({
     el: '#app',
@@ -154,11 +141,11 @@ var app = new Vue({
             temporada: temporada,
             episodio: episodio,
         },
-        uploadMax: 1,
-        uploadCurrent: 1,
+        acao: acao,
         tipoConteudo: tipo,
         serieStr: serieStr,
         user: getUser(),
+        load: false,
     },
     methods: {
         submitConteudo: function () {
@@ -166,8 +153,8 @@ var app = new Vue({
             var form = document.getElementById("conteudoForm");
             if (form.reportValidity()) {
                 $.ajax({
-                    url: "/api/conteudo/",
-                    method: "POST",
+                    url: "/api/conteudo/" + idConteudo,
+                    method: acao === "Cadastrar" ? "POST" : "PATCH",
                     data: JSON.stringify(app.conteudo),
                     contentType: "application/json",
                     headers: {
@@ -176,49 +163,66 @@ var app = new Vue({
                 }).done(function (data) {
                     Swal.fire({
                         title: "Realizando Upload...",
-                        html: progressTemplate,
+                        text: "Aguarde...",
                         showConfirmButton: false,
                         allowOutsideClick: false,
                     });
+
+                    var formData = null;
+                    var thumbRequest = null;
+                    var videoRequest = null;
+
                     // Upload da imagem
-                    app.uploadMax = thumbUpload.files[0].size;
-                    app.uploadCurrent = 0;
-                    var formData = new FormData();
-                    formData.append('file', thumbUpload.files[0]);
-                    $.ajax({
-                        url: "/api/upload/conteudo/thumb/" + data.idConteudo,
-                        data: formData,
-                        method: "POST",
-                        processData: false,
-                        contentType: false,
-                        beforeSend: uploadProgressHandler(app),
-                        headers: {
-                            "Authorization": getCookie("bearer"),
-                        },
-                    }).done(function () {
-                        // Upload do vídeo
+                    if (thumbUpload.files[0] !== undefined) {
+                        app.uploadMax = thumbUpload.files[0].size;
+                        app.uploadCurrent = 0;
+                        formData = new FormData();
+                        formData.append('file', thumbUpload.files[0]);
+                        thumbRequest = $.ajax({
+                            url: "/api/upload/conteudo/thumb/" + data.idConteudo,
+                            data: formData,
+                            method: "POST",
+                            processData: false,
+                            contentType: false,
+                            headers: {
+                                "Authorization": getCookie("bearer"),
+                            },
+                        });
+                    }
+
+
+                    // Upload do vídeo
+                    if (videoUpload.files[0] !== undefined) {
                         app.uploadMax = videoUpload.files[0].size;
                         app.uploadCurrent = 0;
-                        var formData = new FormData();
+                        formData = new FormData();
                         formData.append('file', videoUpload.files[0]);
-                        $.ajax({
+
+                        videoRequest = $.ajax({
                             url: "/api/upload/conteudo/video/" + data.idConteudo,
                             data: formData,
                             method: "POST",
                             processData: false,
                             contentType: false,
-                            beforeSend: uploadProgressHandler(app),
                             headers: {
                                 "Authorization": getCookie("bearer"),
                             },
-                        }).done(function () {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Sucesso',
-                                text: 'Conteúdo cadastrado!',
-                            });
-                        }).fail(handleError)
-                    }).fail(handleError);
+                        });
+                    }
+
+                    $.when(thumbRequest, videoRequest).done(function () {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Sucesso!",
+                            text: "Operação realizada com sucesso!"
+                        }).then(function () {
+                            window.location.href="/conteudo.html?idConteudo=" + data.idConteudo;
+                        });
+                    }).fail(function (a, b) {
+                        handleError(a).then(function () {
+                            handlerError(b)
+                        });
+                    })
                 }).fail(handleError);
             }
         },
@@ -254,9 +258,6 @@ var app = new Vue({
         }
     },
     mounted: function () {
-        progressTemplate = document.getElementById("progressTemplate");
-        progressTemplate.parentElement.removeChild(progressTemplate);
-        progressTemplate.removeAttribute("hidden");
         thumbUpload = document.getElementById("thumbSelector");
         videoUpload = document.getElementById("videoSelector");
     }
@@ -271,6 +272,20 @@ $.ajax({
 }).done(function (json) {
     app.generos = json;
 }).fail(handleError);
+
+if (acao === "Alterar") {
+    $.ajax({
+        url: "/api/conteudo/" + idConteudo,
+        dataType: "json",
+        cache: false,
+        headers: {
+            "Authorization": getCookie("bearer"),
+        }
+    }).done(function (json) {
+        app.conteudo = json;
+        app.conteudo.idGenero = json.genero.idGenero;
+    }).fail(handleError);
+}
         </script>
     </body>
 </html>
