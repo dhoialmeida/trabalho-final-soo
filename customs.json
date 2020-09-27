@@ -1,6 +1,7 @@
 {
     "elements": {},
     "attributes": {
+        "v-bind:class": {},
         "integrity": {
             "context": "link"
         },

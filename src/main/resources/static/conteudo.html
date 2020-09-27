@@ -42,13 +42,27 @@
                                     <video class="embed-responsive-item" :src="'/uploaded/conteudo/video/' + conteudo.videoFile" controls></video>
                                 </div>
                             </div>
-                            <div class="col-md-8">
-                                <h3>{{conteudo.titulo}}</h3>
-                            </div>
-                            <div class="col-md-4 text-right">
-                                <small v-if="conteudo.serie !== undefined">
-                                    <a :href=" '/episodios.html?serie=' + conteudo.serie.idSerie + '#temporada' + conteudo.temporada ">Voltar para lista de episódios</a>
-                                </small>
+                            <div class="col-md-12">
+                                <div class="conteudo-header">
+                                    <span class="h3" style="margin: 0px">{{conteudo.titulo}}</span>
+                                    <span style="flex-grow: 1"></span>
+
+                                    <a class="star-button"
+                                       v-for="n in [1, 2, 3, 4, 5]"
+                                       href="javascript:void(0)"
+                                       v-on:click="submitAvaliacao(n)"
+                                       v-on:mouseover="hoverIdx = n"
+                                       v-on:mouseleave="hoverIdx = 0"
+                                       >
+                                        <svg class="star" v-bind:class="{'star-checked': avaliacao.nota >= n, 'star-hover': hoverIdx >= n}" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-star-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.283.95l-3.523 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+                                        </svg>
+                                    </a>
+
+                                    <small v-if="conteudo.serie !== undefined" class="voltar-serie">
+                                        <a :href=" '/episodios.html?serie=' + conteudo.serie.idSerie + '#temporada' + conteudo.temporada ">Voltar para lista de episódios</a>
+                                    </small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -103,6 +117,7 @@
         <script>
 var url = new URL(window.location.href);
 var idConteudo = url.searchParams.get("idConteudo");
+var idUser = getUser().id;
 
 $.ajax({
     url: "/api/conteudo/" + idConteudo,
@@ -136,6 +151,21 @@ $.ajax({
     app.loaded.comentarios = true;
 });
 
+$.ajax({
+    url: "/api/avaliacao/by/" + idUser + "-on-" + idConteudo,
+    dataType: "json",
+    cache: false,
+    headers: {
+        "Authorization": getCookie("bearer"),
+    },
+}).done(function (json) {
+    app.avaliacao = json;
+}).fail(function (res) {
+    if (res.status != 404) {
+        handleError(res);
+    }
+});
+
 var app = new Vue({
     el: '#app',
     data: {
@@ -156,7 +186,14 @@ var app = new Vue({
             },
         },
         comentarios: [],
+        avaliacao: {
+            idConteudo: idConteudo,
+            idUsuario: idUser,
+            nota: 0,
+            comentario: "",
+        },
         user: getUser(),
+        hoverIdx: 0,
     },
     methods: {
         submitComentario: function () {
@@ -179,6 +216,39 @@ var app = new Vue({
                 app.forms.comentario = "";
             }).fail(handleError);
         },
+        submitAvaliacao: function (n) {
+            app = this;
+            Swal.fire({
+                title: 'Nota: ' + n,
+                text: "Digite seu comentário (opcional)",
+                input: 'text',
+                inputValue: app.avaliacao.comentario,
+                inputAttributes: {
+                    autocapitalize: 'off'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Avaliar',
+                showLoaderOnConfirm: true,
+                preConfirm: function (comentario) {
+                    app.avaliacao.nota = n;
+                    app.avaliacao.comentario = comentario;
+                    return $.ajax({
+                        url: "/api/avaliacao/" + (app.avaliacao.idAvaliacao || ""),
+                        contentType: "application/json",
+                        method: app.avaliacao.idAvaliacao ? "PATCH": "POST",
+                        data: JSON.stringify(app.avaliacao),
+                        headers: {
+                            "Authorization": getCookie("bearer"),
+                        }
+                    }).done(function (res) {
+                        app.avaliacao = res;
+                        return res;
+                    }).catch(handleError);
+                },
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+            });
+        }
     }
 });
         </script>

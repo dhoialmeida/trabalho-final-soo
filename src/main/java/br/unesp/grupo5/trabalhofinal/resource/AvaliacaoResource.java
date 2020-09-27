@@ -51,7 +51,7 @@ public class AvaliacaoResource {
         return ResponseEntity.status(404).body(null);
     }
 
-    @GetMapping("/{user}/{content}")
+    @GetMapping("/by/{user}-on-{content}")
     public ResponseEntity<Avaliacao> findByUsuarioAndConteudo(@PathVariable(value = "user") Long user, @PathVariable(value = "content") Long content) {
         Usuario usuario = usuarioService.getOne(user);
         Conteudo conteudo = conteudoService.getOne(content);
