@@ -19,10 +19,11 @@ function handleError(res) {
             }
         });
     } else {
+        console.log(res);
         return Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: 'Erro: ' + res.responseText,
+            text: 'Erro: ' + res,
         });
     }
 }
@@ -34,4 +35,35 @@ function getUser() {
     }
     
     return null;
+}
+
+function createGenero() {
+    app = this;
+    Swal.fire({
+        title: 'Gênero:',
+        input: 'text',
+        inputAttributes: {
+            autocapitalize: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Cadastrar',
+        showLoaderOnConfirm: true,
+        preConfirm: function (nome) {
+            return $.ajax({
+                url: "/api/genero/",
+                contentType: "application/json",
+                method: "POST",
+                data: JSON.stringify({nome: nome}),
+                headers: {
+                    "Authorization": getCookie("bearer"),
+                }
+            }).done(function (res) {
+                app.generos.push(res);
+                app.serie.idGenero = res.idGenero;
+                return res;
+            }).catch(handleError);
+        },
+        allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+    });
 }
