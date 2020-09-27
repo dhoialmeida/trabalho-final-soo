@@ -86,7 +86,7 @@
                                 data: JSON.stringify(app.credenciais),
                                 contentType: "application/json",
                             }).done(function (data, tmp, response) {
-                                document.cookie = "bearer=" + response.getResponseHeader("Authorization");
+                                document.cookie = "bearer=" + response.getResponseHeader("Authorization") + "; expires= Thu, 21 Aug 2030 20:00:00 UTC";
                                 Swal.fire({
                                     icon: 'success',
                                     title: 'Sucesso',

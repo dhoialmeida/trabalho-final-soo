@@ -184,6 +184,9 @@ var app = new Vue({
                         processData: false,
                         contentType: false,
                         beforeSend: uploadProgressHandler(app),
+                        headers: {
+                            "Authorization": getCookie("bearer"),
+                        },
                     }).done(function () {
                         // Upload do vídeo
                         app.uploadMax = videoUpload.files[0].size;
@@ -197,6 +200,9 @@ var app = new Vue({
                             processData: false,
                             contentType: false,
                             beforeSend: uploadProgressHandler(app),
+                            headers: {
+                                "Authorization": getCookie("bearer"),
+                            },
                         }).done(function () {
                             Swal.fire({
                                 icon: 'success',

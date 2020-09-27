@@ -36,7 +36,7 @@ public class Usuario implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long idPessoa;
+    private long idUsuario;
 
     private String nome;
 

@@ -50,11 +50,12 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             HttpServletResponse res,
             FilterChain chain,
             Authentication auth) throws IOException, ServletException {
-
+        AuthUser user = (AuthUser) auth.getPrincipal();
         String token = JWT.create()
-                .withSubject(((User) auth.getPrincipal()).getUsername())
+                .withSubject(user.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .withClaim("role", auth.getAuthorities().stream().map(a -> a.toString()).findFirst().orElse("usuario"))
+                .withClaim("id", user.getIdUsuario())
                 .sign(HMAC512(SECRET.getBytes()));
         res.addHeader(HEADER_STRING, TOKEN_PREFIX + token);
     }

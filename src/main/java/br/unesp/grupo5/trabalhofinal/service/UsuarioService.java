@@ -2,6 +2,7 @@ package br.unesp.grupo5.trabalhofinal.service;
 
 import br.unesp.grupo5.trabalhofinal.entity.Usuario;
 import br.unesp.grupo5.trabalhofinal.repository.UsuarioRepository;
+import br.unesp.grupo5.trabalhofinal.security.AuthUser;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class UsuarioService implements UserDetailsService {
             } else {
                 roles.add(new SimpleGrantedAuthority("usuario"));
             }
-            return new User(name, usuario.getSenha(), roles);
+            return new AuthUser(name, usuario.getSenha(), roles, usuario.getIdUsuario());
         }
 
         throw new UsernameNotFoundException(name);
