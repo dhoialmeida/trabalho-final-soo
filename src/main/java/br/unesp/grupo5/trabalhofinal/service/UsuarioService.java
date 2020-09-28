@@ -1,7 +1,5 @@
 package br.unesp.grupo5.trabalhofinal.service;
 
-import br.unesp.grupo5.trabalhofinal.entity.Avaliacao;
-import br.unesp.grupo5.trabalhofinal.entity.Comentario;
 import br.unesp.grupo5.trabalhofinal.entity.Usuario;
 import br.unesp.grupo5.trabalhofinal.repository.UsuarioRepository;
 import br.unesp.grupo5.trabalhofinal.security.AuthUser;
@@ -9,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

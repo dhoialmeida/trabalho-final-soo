@@ -1,7 +1,6 @@
 package br.unesp.grupo5.trabalhofinal.resource;
 
 import br.unesp.grupo5.trabalhofinal.dto.SerieDTO;
-import br.unesp.grupo5.trabalhofinal.entity.Conteudo;
 import br.unesp.grupo5.trabalhofinal.entity.ConteudoEpisodico;
 import br.unesp.grupo5.trabalhofinal.entity.Genero;
 import br.unesp.grupo5.trabalhofinal.entity.Serie;

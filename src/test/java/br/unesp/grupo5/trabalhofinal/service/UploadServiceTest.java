@@ -1,14 +1,10 @@
 package br.unesp.grupo5.trabalhofinal.service;
 
 import br.unesp.grupo5.trabalhofinal.entity.Conteudo;
-import br.unesp.grupo5.trabalhofinal.entity.Usuario;
 import java.io.ByteArrayInputStream;
-import java.time.LocalDate;
-import java.time.Month;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;

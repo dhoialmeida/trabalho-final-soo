@@ -1,6 +1,5 @@
 package br.unesp.grupo5.trabalhofinal.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;

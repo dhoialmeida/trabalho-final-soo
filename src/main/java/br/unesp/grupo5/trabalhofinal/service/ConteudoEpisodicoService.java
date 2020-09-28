@@ -1,7 +1,5 @@
 package br.unesp.grupo5.trabalhofinal.service;
 
-import br.unesp.grupo5.trabalhofinal.entity.Avaliacao;
-import br.unesp.grupo5.trabalhofinal.entity.Comentario;
 import br.unesp.grupo5.trabalhofinal.entity.ConteudoEpisodico;
 import br.unesp.grupo5.trabalhofinal.entity.Serie;
 import br.unesp.grupo5.trabalhofinal.repository.ConteudoEpisodicoRepository;

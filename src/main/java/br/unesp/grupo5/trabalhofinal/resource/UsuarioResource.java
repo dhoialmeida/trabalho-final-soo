@@ -1,13 +1,11 @@
 package br.unesp.grupo5.trabalhofinal.resource;
 
-import br.unesp.grupo5.trabalhofinal.dto.CredenciaisDTO;
 import br.unesp.grupo5.trabalhofinal.dto.UsuarioDTO;
 import br.unesp.grupo5.trabalhofinal.entity.Assinatura;
 import br.unesp.grupo5.trabalhofinal.entity.Usuario;
 import br.unesp.grupo5.trabalhofinal.service.UsuarioService;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

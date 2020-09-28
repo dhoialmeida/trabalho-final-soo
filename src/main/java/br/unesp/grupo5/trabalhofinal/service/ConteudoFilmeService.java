@@ -1,7 +1,5 @@
 package br.unesp.grupo5.trabalhofinal.service;
 
-import br.unesp.grupo5.trabalhofinal.entity.Avaliacao;
-import br.unesp.grupo5.trabalhofinal.entity.Comentario;
 import br.unesp.grupo5.trabalhofinal.entity.ConteudoFilme;
 import br.unesp.grupo5.trabalhofinal.repository.ConteudoFilmeRepository;
 import java.util.List;
