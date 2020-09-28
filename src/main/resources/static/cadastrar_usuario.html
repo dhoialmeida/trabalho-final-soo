@@ -33,7 +33,7 @@
                 <div v-if='acao === "Alterar"'>
                     <h2>Assinatura</h2>
                     <p><strong>A sua assinatura é válida até {{usuario.assinatura.validaAte}}</strong></p>
-                    <div v-if="usuario.assinatura.assinaturaAtiva">
+                    <div v-if="usuario.assinatura.ativa">
                         <p>
                             A sua assinatura está ativa e será renovada automaticamente.
                             <a href='javascript:void(0)' v-on:click="assinatura('desativar')" class="btn btn-sm btn-primary" type="submit">Desativar</a>

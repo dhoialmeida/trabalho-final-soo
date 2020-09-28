@@ -10,4 +10,7 @@ public interface ComentarioRepository extends JpaRepository<Comentario, Long> {
 
     List<Comentario> findByUsuario(Usuario usuario);
     List<Comentario> findByConteudo(Conteudo conteudo);
+    
+    long deleteByUsuario(Usuario usuario);
+    long deleteByConteudo(Conteudo conteudo);
 }

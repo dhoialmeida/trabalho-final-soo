@@ -27,15 +27,15 @@ public class Assinatura implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long idAssinatura;
 
-    private boolean assinaturaAtiva;
+    private boolean ativa;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime validaAte;
 
-    public Assinatura(boolean assinaturaAtiva, LocalDateTime validaAte) {
-        this.assinaturaAtiva = assinaturaAtiva;
+    public Assinatura(boolean ativa, LocalDateTime validaAte) {
+        this.ativa = ativa;
         this.validaAte = validaAte;
     }
 

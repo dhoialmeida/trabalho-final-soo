@@ -1,5 +1,7 @@
 package br.unesp.grupo5.trabalhofinal.service;
 
+import br.unesp.grupo5.trabalhofinal.entity.Avaliacao;
+import br.unesp.grupo5.trabalhofinal.entity.Comentario;
 import br.unesp.grupo5.trabalhofinal.entity.Usuario;
 import br.unesp.grupo5.trabalhofinal.repository.UsuarioRepository;
 import br.unesp.grupo5.trabalhofinal.security.AuthUser;
@@ -12,12 +14,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class UsuarioService implements UserDetailsService {
 
     @Autowired
     private UsuarioRepository repository;
+    
+    @Autowired
+    private ComentarioService comentarioService;
+
+    @Autowired
+    private AvaliacaoService avaliacaoService;
 
     public UsuarioService() {
     }
@@ -35,7 +44,7 @@ public class UsuarioService implements UserDetailsService {
         Usuario usuario = findByEmail(name);
         if (usuario != null) {
             ArrayList<SimpleGrantedAuthority> roles = new ArrayList<>();
-            if (usuario.isEFuncionario()) {
+            if (usuario.isFuncionario()) {
                 roles.add(new SimpleGrantedAuthority("funcionario"));
             } else {
                 roles.add(new SimpleGrantedAuthority("usuario"));
@@ -62,7 +71,10 @@ public class UsuarioService implements UserDetailsService {
         return repository.save(s);
     }
 
+    @Transactional
     public void delete(Usuario t) {
+        comentarioService.deleteByUsuario(t);
+        avaliacaoService.deleteByUsuario(t);
         repository.delete(t);
     }
 

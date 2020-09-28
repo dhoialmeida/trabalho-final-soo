@@ -7,6 +7,7 @@ import br.unesp.grupo5.trabalhofinal.repository.ConteudoRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class ConteudoService {
@@ -46,17 +47,10 @@ public class ConteudoService {
         return repository.save(s);
     }
 
+    @Transactional
     public void delete(Conteudo t) {
-        List<Comentario> comentarios = comentarioService.findByConteudo(t);
-        List<Avaliacao> avaliacoes = avaliacaoService.findByConteudo(t);
-
-        for (Comentario c : comentarios) {
-            comentarioService.delete(c);
-        }
-
-        for (Avaliacao a : avaliacoes) {
-            avaliacaoService.delete(a);
-        }
+        comentarioService.deleteByConteudo(t);
+        avaliacaoService.deleteByConteudo(t);
         
         uploadService.deleteConteudoThumb(t.getThumbnailFile());
         uploadService.deleteConteudoVideo(t.getVideoFile());

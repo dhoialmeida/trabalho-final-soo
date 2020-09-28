@@ -11,4 +11,7 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
     List<Avaliacao> findByUsuario(Usuario usuario);
     Avaliacao findByUsuarioAndConteudo(Usuario usuario, Conteudo conteudo);
     List<Avaliacao> findByConteudo(Conteudo conteudo);
+    
+    long deleteByUsuario(Usuario usuario);
+    long deleteByConteudo(Conteudo conteudo);
 }

@@ -53,7 +53,7 @@ public class Usuario implements Serializable {
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate nascimento;
 
-    private boolean eFuncionario;
+    private boolean funcionario;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "endereco_idEndereco")
@@ -76,7 +76,7 @@ public class Usuario implements Serializable {
         this.senha = senha;
         this.cpf = cpf;
         this.nascimento = nascimento;
-        this.eFuncionario = false;
+        this.funcionario = false;
         this.endereco = null;
         this.cartaoCredito = null;
     }

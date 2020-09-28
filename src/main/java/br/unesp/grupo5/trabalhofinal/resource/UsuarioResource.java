@@ -71,7 +71,7 @@ public class UsuarioResource {
     public ResponseEntity<Usuario> ativarAssinatura(@PathVariable(value = "id") Long id) {
         Usuario usuario = usuarioService.getOne(id);
         if (usuario != null) {
-            usuario.getAssinatura().setAssinaturaAtiva(true);
+            usuario.getAssinatura().setAtiva(true);
             usuarioService.save(usuario);
             return ResponseEntity.ok(usuario);
         }
@@ -82,7 +82,7 @@ public class UsuarioResource {
     public ResponseEntity<Usuario> desativarAssinatura(@PathVariable(value = "id") Long id) {
         Usuario usuario = usuarioService.getOne(id);
         if (usuario != null) {
-            usuario.getAssinatura().setAssinaturaAtiva(false);
+            usuario.getAssinatura().setAtiva(false);
             usuarioService.save(usuario);
             return ResponseEntity.ok(usuario);
         }

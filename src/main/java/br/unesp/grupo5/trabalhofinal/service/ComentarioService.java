@@ -7,6 +7,7 @@ import br.unesp.grupo5.trabalhofinal.repository.ComentarioRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class ComentarioService {
@@ -45,4 +46,13 @@ public class ComentarioService {
         repository.delete(t);
     }
 
+    @Transactional
+    public long deleteByUsuario(Usuario usuario) {
+        return repository.deleteByUsuario(usuario);
+    }
+
+    @Transactional
+    public long deleteByConteudo(Conteudo conteudo) {
+        return repository.deleteByConteudo(conteudo);
+    }
 }
