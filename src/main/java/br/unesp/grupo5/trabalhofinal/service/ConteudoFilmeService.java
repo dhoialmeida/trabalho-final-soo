@@ -1,5 +1,7 @@
 package br.unesp.grupo5.trabalhofinal.service;
 
+import br.unesp.grupo5.trabalhofinal.entity.Avaliacao;
+import br.unesp.grupo5.trabalhofinal.entity.Comentario;
 import br.unesp.grupo5.trabalhofinal.entity.ConteudoFilme;
 import br.unesp.grupo5.trabalhofinal.repository.ConteudoFilmeRepository;
 import java.util.List;
@@ -11,6 +13,15 @@ public class ConteudoFilmeService {
 
     @Autowired
     private ConteudoFilmeRepository repository;
+    
+    @Autowired
+    private ComentarioService comentarioService;
+
+    @Autowired
+    private AvaliacaoService avaliacaoService;
+    
+    @Autowired
+    private UploadService uploadService;
 
     public ConteudoFilmeService() {
     }
@@ -36,6 +47,19 @@ public class ConteudoFilmeService {
     }
 
     public void delete(ConteudoFilme t) {
+        List<Comentario> comentarios = comentarioService.findByConteudo(t);
+        List<Avaliacao> avaliacoes = avaliacaoService.findByConteudo(t);
+
+        for (Comentario c : comentarios) {
+            comentarioService.delete(c);
+        }
+
+        for (Avaliacao a : avaliacoes) {
+            avaliacaoService.delete(a);
+        }
+        
+        uploadService.deleteConteudoThumb(t.getThumbnailFile());
+        uploadService.deleteConteudoVideo(t.getVideoFile());
         repository.delete(t);
     }
 

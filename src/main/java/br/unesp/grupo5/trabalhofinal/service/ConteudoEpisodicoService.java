@@ -21,6 +21,9 @@ public class ConteudoEpisodicoService {
     @Autowired
     private AvaliacaoService avaliacaoService;
 
+    @Autowired
+    private UploadService uploadService;
+
     public ConteudoEpisodicoService() {
     }
 
@@ -55,7 +58,10 @@ public class ConteudoEpisodicoService {
         for (Avaliacao a : avaliacoes) {
             avaliacaoService.delete(a);
         }
-        
+
+        uploadService.deleteConteudoThumb(t.getThumbnailFile());
+        uploadService.deleteConteudoVideo(t.getVideoFile());
+
         repository.delete(t);
     }
 }

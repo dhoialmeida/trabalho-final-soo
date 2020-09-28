@@ -17,10 +17,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity(name = "CartaoCredito")
-@Table(
-        uniqueConstraints = {
-            @UniqueConstraint(columnNames = "numero", name = "numero_unico"),}
-)
 @Getter
 @Setter
 @ToString
@@ -31,7 +27,6 @@ public class CartaoCredito implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long idCartao;
 
-    @Column(unique = true)
     private String numero;
 
     private String titular;

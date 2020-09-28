@@ -89,4 +89,25 @@ public class UploadService {
     public FileSystemResource getConteudoVideo(String name) {
         return readFile(conteudoVideo.toString(), name);
     }
+    
+    public void deleteFile(String dir, String name) {
+        Path location = Paths.get(dir, name);
+        try {
+            Files.delete(location);
+        } catch (IOException ex) {
+            System.out.println("Arquivo nao encontrado: " + location.toString());
+        }
+    }
+    
+    public void deleteSerieThumb(String name) {
+        deleteFile(seriesThumb.toString(), name);
+    }
+
+    public void deleteConteudoThumb(String name) {
+        deleteFile(conteudoThumb.toString(), name);
+    }
+
+    public void deleteConteudoVideo(String name) {
+        deleteFile(conteudoVideo.toString(), name);
+    }
 }
