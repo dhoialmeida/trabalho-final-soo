@@ -17,9 +17,10 @@
                 <div class="inner">
                     <a href="/"><h3 class="masthead-brand">Carlostream</h3></a>
                     <nav class="nav nav-masthead justify-content-center">
-                        <a class="nav-link" href="/filmes.html">Filmes</a>
-                        <a class="nav-link" href="/series.html">Series</a>
-                        <a class="nav-link" v-if="user !== null" href="/login.html">Fazer Logout ({{user.sub }})</a>
+                        <a class="nav-link" v-if="user !== null" href="/filmes.html">Filmes</a>
+                        <a class="nav-link" v-if="user !== null" href="/series.html">Series</a>
+<a class="nav-link" v-if="user !== null" :href="'/cadastrar_usuario.html?acao=Alterar&idUsuario=' + user.id">{{ user.sub }} </a>
+                        <a class="nav-link" v-if="user !== null" href="/login.html">Fazer Logout</a>
                         <a class="nav-link" v-if="user === null" href="/login.html">Fazer Login</a>
                         <a class="nav-link" v-if="user === null" href="/cadastrar_usuario.html">Cadastrar</a>
                     </nav>

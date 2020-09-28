@@ -17,16 +17,17 @@
                 <div class="inner">
                     <a href="/"><h3 class="masthead-brand">Carlostream</h3></a>
                     <nav class="nav nav-masthead justify-content-center">
-                        <a class="nav-link" href="/filmes.html">Filmes</a>
-                        <a class="nav-link" href="/series.html">Series</a>
-                        <a class="nav-link" v-if="user !== null" href="/login.html">Fazer Logout ({{user.sub }})</a>
+                        <a class="nav-link" v-if="user !== null" href="/filmes.html">Filmes</a>
+                        <a class="nav-link" v-if="user !== null" href="/series.html">Series</a>
+<a class="nav-link" v-if="user !== null" :href="'/cadastrar_usuario.html?acao=Alterar&idUsuario=' + user.id">{{ user.sub }} </a>
+                        <a class="nav-link" v-if="user !== null" href="/login.html">Fazer Logout</a>
                         <a class="nav-link" v-if="user === null" href="/login.html">Fazer Login</a>
                         <a class="nav-link" v-if="user === null" href="/cadastrar_usuario.html">Cadastrar</a>
                     </nav>
                 </div>
             </header>
 
-            <h1 class="jumbotron-heading text-center">Cadastrar Usuário</h1>
+            <h1 class="jumbotron-heading text-center">{{ acao }} Usuário</h1>
 
             <div class="container">
                 <form id="conteudoForm" action="javascript:void(0);" method="POST" enctype="multipart/form-data">
@@ -40,12 +41,12 @@
                         <input v-model="usuario.email" id="email" name="email" type="text" class="form-control" required="required">
                     </div>
                     <div class="form-group">
-                        <label for="novaSenha">Senha</label> 
-                        <input v-model="usuario.senha" id="novaSenha" name="novaSenha" type="password" class="form-control" required="required">
+                        <label for="novaSenha">Senha <span v-if="acao==='Alterar'">(Deixe em branco para não alterar)</span></label> 
+                        <input v-model="usuario.senha" id="novaSenha" name="novaSenha" type="password" class="form-control" :required="acao==='Cadastrar'">
                     </div>
                     <div class="form-group">
                         <label for="novaSenhaConf">Confirmar senha</label> 
-                        <input v-model="usuario.senhaConf" id="novaSenhaConf" name="novaSenhaConf" type="password" class="form-control" required="required">
+                        <input v-model="senhaConf" id="novaSenhaConf" name="novaSenhaConf" type="password" class="form-control" :required="acao==='Cadastrar'">
                     </div>
                     <div class="form-group">
                         <label for="cpf">CPF</label> 
@@ -113,7 +114,7 @@
                     </div>
 
                     <hr>
-                    <h2>Assinatura - R$ 20,00 por mês, renovação automárica</h2>
+                    <h2>Assinatura - R$ 20,00 por mês</h2>
                     <div class="form-group">
                         <label for="cartaoCreditoNumero">Número do cartão</label> 
                         <input v-model="usuario.cartaoCreditoNumero" id="cartaoCreditoNumero" name="cartaoCreditoNumero" type="text" class="form-control" required="required">
@@ -139,6 +140,11 @@
                     </div>
                     <div class="form-group text-center">
                         <button v-on:click="submitConteudo" name="submit" type="submit" class="btn btn-primary">Cadastrar</button>
+                        <button v-if='acao==="Alterar"' v-on:click="removerUsuario" name="remover" type="submit" class="btn btn-dark">Remover usuario
+                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+                            </svg>
+                        </button>
                     </div>
                 </form>
 
@@ -157,55 +163,145 @@
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
         <script src="js/main.js"></script>
         <script>
-            var app = new Vue({
-                el: '#app',
-                data: {
-                    user: getUser(),
-                    usuario: {
-                        "nome": "",
-                        "email": "",
-                        "senha": "",
-                        "cpf": "",
-                        "nascimento": "",
+var url = new URL(window.location.href);
+var acao = url.searchParams.get("acao") || "Cadastrar";
+var user = getUser()
+var idUser = "";
+if (user !== null && user.id !== undefined) {
+    idUser = user.id;
+}
 
-                        "enderecoRua": "",
-                        "enderecoNumero": "",
-                        "enderecoBairro": "",
-                        "enderecoCep": "",
-                        "enderecoCidade": "",
-                        "enderecoEstado": "",
+var app = new Vue({
+    el: '#app',
+    data: {
+        user: getUser(),
+        usuario: {
+            "nome": "",
+            "email": "",
+            "senha": "",
+            "cpf": "",
+            "nascimento": "",
 
-                        "cartaoCreditoNumero": "",
-                        "cartaoCreditoTitular": "",
-                        "cartaoCreditoExpiracao": "",
-                        "cartaoCreditoCVV": "",
-                        "cartaoCreditoBandeira": "Mastercard"
-                    },
-                },
-                methods: {
-                    submitConteudo: function () {
-                        app = this;
-                        var form = document.getElementById("conteudoForm");
-                        if (form.reportValidity()) {
-                            $.ajax({
-                                url: "/api/usuario/",
-                                method: "POST",
-                                data: JSON.stringify(app.usuario),
-                                contentType: "application/json",
-                            }).done(function (data) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Sucesso',
-                                    text: 'Usuário cadastrado com sucesso!',
-                                    willClose: function () {
-                                        window.location.href = "/login.html"
-                                    }
-                                });
-                            }).fail(handleError);
+            "enderecoRua": "",
+            "enderecoNumero": "",
+            "enderecoBairro": "",
+            "enderecoCep": "",
+            "enderecoCidade": "",
+            "enderecoEstado": "",
+
+            "cartaoCreditoNumero": "",
+            "cartaoCreditoTitular": "",
+            "cartaoCreditoExpiracao": "",
+            "cartaoCreditoCVV": "",
+            "cartaoCreditoBandeira": "Mastercard"
+        },
+        acao: acao,
+        senhaConf: "",
+    },
+    methods: {
+        submitConteudo: function () {
+            app = this;
+            var form = document.getElementById("conteudoForm");
+            if (form.reportValidity()) {
+                if (app.senhaConf !== app.usuario.senha) {
+                    Swal.fire({
+                       icon: "error",
+                       title: "Erro",
+                       text: "Senhas não coincidem"
+                    });
+                    
+                    return;
+                }
+                $.ajax({
+                    url: "/api/usuario/" + idUser,
+                    method: acao === "Cadastrar" ? "POST" : "PATCH",
+                    data: JSON.stringify(app.usuario),
+                    contentType: "application/json",
+                }).done(function (data) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sucesso',
+                        text: 'Operação sucedida!',
+                        willClose: function () {
+                            window.location.href = "/login.html"
                         }
-                    }
-                },
+                    });
+                }).fail(handleError);
+            }
+        },
+        removerUsuario: function () {
+            var app = this;
+            var nextUrl = "/login.html";
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Deseja excluir sua conta? Não será possível desfazer",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirmar',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: "Excluindo...",
+                        text: "Aguarde...",
+                        showConfirmButton: false,
+                        allowOutsideClick: false,
+                    });
+                    
+                    $.ajax({
+                        url: "/api/usuario/" + idUser,
+                        method: "DELETE",
+                        contentType: "application/json",
+                        headers: {
+                            "Authorization": getCookie("bearer"),
+                        },
+                    }).done(function () {
+                        Swal.fire(
+                                'Sucesso!',
+                                'O usuário foi removido',
+                                'success'
+                                ).then(function () {
+                            window.location.href = nextUrl;
+                        });
+                    }).fail(handleError);
+                }
             });
+        },
+    },
+});
+
+if (acao === "Alterar") {
+    $.ajax({
+        url: "/api/usuario/get/" + idUser,
+        dataType: "json",
+        cache: false,
+        headers: {
+            "Authorization": getCookie("bearer"),
+        }
+    }).done(function (json) {
+        app.usuario = {
+            "nome": json.nome,
+            "email": json.email,
+            "senha": "",
+            "cpf": json.cpf,
+            "nascimento": json.nascimento,
+
+            "enderecoRua": json.endereco.rua,
+            "enderecoNumero": json.endereco.numero,
+            "enderecoBairro": json.endereco.bairro,
+            "enderecoCep": json.endereco.cep,
+            "enderecoCidade": json.endereco.cidade,
+            "enderecoEstado": json.endereco.estado,
+
+            "cartaoCreditoNumero": json.cartaoCredito.numero,
+            "cartaoCreditoTitular": json.cartaoCredito.titular,
+            "cartaoCreditoExpiracao": json.cartaoCredito.expiracao,
+            "cartaoCreditoCVV": json.cartaoCredito.cvv,
+            "cartaoCreditoBandeira": json.cartaoCredito.bandeira
+        };
+    }).fail(handleError);
+}
         </script>
     </body>
 </html>

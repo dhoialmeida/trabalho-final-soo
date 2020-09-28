@@ -48,7 +48,7 @@ public class Usuario implements Serializable {
     @Column(unique = true)
     private String cpf;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate nascimento;
@@ -78,7 +78,6 @@ public class Usuario implements Serializable {
         this.nascimento = nascimento;
         this.eFuncionario = false;
         this.endereco = null;
-        this.assinatura = new Assinatura();
         this.cartaoCredito = null;
     }
 }

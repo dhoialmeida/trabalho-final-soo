@@ -2,8 +2,10 @@ package br.unesp.grupo5.trabalhofinal.resource;
 
 import br.unesp.grupo5.trabalhofinal.dto.CredenciaisDTO;
 import br.unesp.grupo5.trabalhofinal.dto.UsuarioDTO;
+import br.unesp.grupo5.trabalhofinal.entity.Assinatura;
 import br.unesp.grupo5.trabalhofinal.entity.Usuario;
 import br.unesp.grupo5.trabalhofinal.service.UsuarioService;
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
@@ -35,18 +37,18 @@ public class UsuarioResource {
         return usuarioService.findAll();
     }
 
-    @GetMapping("/{cpf}")
-    public ResponseEntity<Usuario> getByCpf(@PathVariable(value = "cpf") String cpf) {
-        Usuario usuario = usuarioService.findByCpf(cpf);
+    @GetMapping("/get/{id}")
+    public ResponseEntity<Usuario> getByCpf(@PathVariable(value = "id") Long id) {
+        Usuario usuario = usuarioService.getOne(id);
         if (usuario != null) {
             return ResponseEntity.ok(usuario);
         }
         return ResponseEntity.status(404).body(null);
     }
 
-    @DeleteMapping("/{cpf}")
-    public ResponseEntity<Boolean> delete(@PathVariable(value = "cpf") String cpf) {
-        Usuario usuario = usuarioService.findByCpf(cpf);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Boolean> delete(@PathVariable(value = "id") Long id) {
+        Usuario usuario = usuarioService.getOne(id);
         if (usuario != null) {
             usuarioService.delete(usuario);
             return ResponseEntity.ok(true);
@@ -59,24 +61,24 @@ public class UsuarioResource {
     public Usuario save(@RequestBody UsuarioDTO usuarioDTO) {
         Usuario usuario = mapper.map(usuarioDTO, Usuario.class);
         usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
+        LocalDateTime now = LocalDateTime.now();
+        usuario.setAssinatura(new Assinatura(true, now.plusDays(31)));
         usuario = usuarioService.save(usuario);
         return usuario;
     }
-    
-    @PostMapping("/login")
-    public ResponseEntity<Usuario> login(@RequestBody CredenciaisDTO credenciaisDTO) {
-        Usuario usuario = usuarioService.findByEmail(credenciaisDTO.getEmail());
-        if (usuario != null) {
-            return ResponseEntity.ok(usuario);
-        }
-        return ResponseEntity.status(404).body(null);
-    }
 
-    @PatchMapping("/{cpf}")
-    public ResponseEntity<Usuario> update(@PathVariable(value = "cpf") String cpf, @RequestBody UsuarioDTO usuarioDTO) {
-        Usuario usuario = usuarioService.findByCpf(cpf);
+    @PatchMapping("/{id}")
+    public ResponseEntity<Usuario> update(@PathVariable(value = "id") Long id, @RequestBody UsuarioDTO usuarioDTO) {
+        Usuario usuario = usuarioService.getOne(id);
         if (usuario != null) {
+            String old = usuario.getSenha();
             mapper.map(usuarioDTO, usuario);
+            if (usuarioDTO.getSenha().isBlank()) {
+                usuario.setSenha(old);
+            } else {
+                usuario.setSenha(passwordEncoder.encode(usuarioDTO.getSenha()));
+            }
+
             usuario = usuarioService.update(usuario);
             return ResponseEntity.ok(usuario);
         }

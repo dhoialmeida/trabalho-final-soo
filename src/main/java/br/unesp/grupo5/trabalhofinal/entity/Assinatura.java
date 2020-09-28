@@ -22,8 +22,15 @@ public class Assinatura implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long idAssinatura;
 
-    private boolean assinaturaAtiva = true;
+    private boolean assinaturaAtiva;
 
     private LocalDateTime validaAte;
 
+    public Assinatura(boolean assinaturaAtiva, LocalDateTime validaAte) {
+        this.assinaturaAtiva = assinaturaAtiva;
+        this.validaAte = validaAte;
+    }
+
+    public Assinatura() {
+    }
 }
