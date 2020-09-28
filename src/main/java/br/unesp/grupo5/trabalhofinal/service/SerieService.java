@@ -15,6 +15,9 @@ public class SerieService {
     
     @Autowired
     private ConteudoEpisodicoService conteudoEpisodicoService;
+    
+    @Autowired
+    private UploadService uploadService;
 
     public SerieService() {
     }
@@ -45,6 +48,8 @@ public class SerieService {
         for (ConteudoEpisodico c: conteudos) {
             conteudoEpisodicoService.delete(c);
         }
+        
+        uploadService.deleteSerieThumb(t.getThumbnailFile());
 
         repository.delete(t);
     }
