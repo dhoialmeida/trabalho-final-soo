@@ -56,7 +56,7 @@ function handleError(res) {
         return Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: 'Erro: ' + JSON.stringify(res),
+            text: 'Ocorreu um erro!',
         });
     }
 }
