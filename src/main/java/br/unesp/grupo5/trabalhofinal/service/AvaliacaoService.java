@@ -56,7 +56,7 @@ public class AvaliacaoService {
         return repository.deleteByConteudo(conteudo);
     }
 
-    public List<Conteudo> getRecommendations(int nota, Conteudo conteudo) {
-        return repository.getRecommendations(nota, conteudo);
+    public List<Conteudo> getRecommendations(Avaliacao avaliacao) {
+        return repository.getRecommendations(avaliacao.getNota(), avaliacao.getConteudo(), avaliacao.getConteudo().getGenero());
     }
 }

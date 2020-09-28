@@ -72,7 +72,7 @@ public class AvaliacaoResource {
         if (usuario != null && conteudo != null) {
             Avaliacao avaliacao = avaliacaoService.findByUsuarioAndConteudo(usuario, conteudo);
             if (avaliacao != null) {
-                List<Conteudo> conteudos = avaliacaoService.getRecommendations(avaliacao.getNota(), conteudo);
+                List<Conteudo> conteudos = avaliacaoService.getRecommendations(avaliacao);
                 return ResponseEntity.ok(conteudos);
             }
         }
