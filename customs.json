@@ -2,22 +2,23 @@
     "elements": {},
     "attributes": {
         "v-bind:class": {},
+        "v-if": {},
+        "v-for": {},
+        ":href": {},
+        ":required": {},
+        "v-model": {},
         ":disabled": {},
         "integrity": {
             "context": "link"
         },
-        "v-if": {},
         "v-on:click": {},
         ":id": {},
-        "v-for": {},
+        "v-else": {},
         ":src": {
             "context": "img"
         },
         ":max": {
             "context": "progress"
-        },
-        ":href": {},
-        ":required": {},
-        "v-model": {}
+        }
     }
 }

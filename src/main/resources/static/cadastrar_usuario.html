@@ -19,7 +19,7 @@
                     <nav class="nav nav-masthead justify-content-center">
                         <a class="nav-link" v-if="user !== null" href="/filmes.html">Filmes</a>
                         <a class="nav-link" v-if="user !== null" href="/series.html">Series</a>
-<a class="nav-link" v-if="user !== null" :href="'/cadastrar_usuario.html?acao=Alterar&idUsuario=' + user.id">{{ user.sub }} </a>
+                        <a class="nav-link" v-if="user !== null" :href="'/cadastrar_usuario.html?acao=Alterar&idUsuario=' + user.id">{{ user.sub }} </a>
                         <a class="nav-link" v-if="user !== null" href="/login.html">Fazer Logout</a>
                         <a class="nav-link" v-if="user === null" href="/login.html">Fazer Login</a>
                         <a class="nav-link" v-if="user === null" href="/cadastrar_usuario.html">Cadastrar</a>
@@ -30,6 +30,23 @@
             <h1 class="jumbotron-heading text-center">{{ acao }} Usuário</h1>
 
             <div class="container">
+                <div v-if='acao === "Alterar"'>
+                    <h2>Assinatura</h2>
+                    <p><strong>A sua assinatura é válida até {{usuario.assinatura.validaAte}}</strong></p>
+                    <div v-if="usuario.assinatura.assinaturaAtiva">
+                        <p>
+                            A sua assinatura está ativa e será renovada automaticamente.
+                            <a href='javascript:void(0)' v-on:click="assinatura('desativar')" class="btn btn-sm btn-primary" type="submit">Desativar</a>
+                        </p>
+                    </div>
+                    <div v-else>
+                        <p>
+                            A sua assinatura está inativa e não será renovada automaticamente.
+                            <a href='javascript:void(0)' v-on:click="assinatura('ativar')" class="btn btn-sm btn-primary" type="submit">Ativar</a>
+                        </p>
+                    </div>
+                </div>
+                <hr>
                 <form id="conteudoForm" action="javascript:void(0);" method="POST" enctype="multipart/form-data">
                     <h2>Dados</h2>
                     <div class="form-group">
@@ -193,7 +210,8 @@ var app = new Vue({
             "cartaoCreditoTitular": "",
             "cartaoCreditoExpiracao": "",
             "cartaoCreditoCVV": "",
-            "cartaoCreditoBandeira": "Mastercard"
+            "cartaoCreditoBandeira": "Mastercard",
+            assinatura: {},
         },
         acao: acao,
         senhaConf: "",
@@ -205,11 +223,11 @@ var app = new Vue({
             if (form.reportValidity()) {
                 if (app.senhaConf !== app.usuario.senha) {
                     Swal.fire({
-                       icon: "error",
-                       title: "Erro",
-                       text: "Senhas não coincidem"
+                        icon: "error",
+                        title: "Erro",
+                        text: "Senhas não coincidem"
                     });
-                    
+
                     return;
                 }
                 $.ajax({
@@ -217,14 +235,17 @@ var app = new Vue({
                     method: acao === "Cadastrar" ? "POST" : "PATCH",
                     data: JSON.stringify(app.usuario),
                     contentType: "application/json",
+                    headers: {
+                        "Authorization": getCookie("bearer"),
+                    },
                 }).done(function (data) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Sucesso',
                         text: 'Operação sucedida!',
                         willClose: function () {
-                            window.location.href = "/login.html"
-                        }
+                            window.location.href = "/login.html";
+                        },
                     });
                 }).fail(handleError);
             }
@@ -248,7 +269,7 @@ var app = new Vue({
                         showConfirmButton: false,
                         allowOutsideClick: false,
                     });
-                    
+
                     $.ajax({
                         url: "/api/usuario/" + idUser,
                         method: "DELETE",
@@ -268,6 +289,26 @@ var app = new Vue({
                 }
             });
         },
+        assinatura: function (action) {
+            Swal.fire({
+                title: "Executando alteração",
+                text: "Aguarde...",
+                showConfirmButton: false,
+                allowOutsideClick: false,
+            });
+
+            $.ajax({
+                url: "/api/usuario/" + action + "/" + idUser,
+                method: "PATCH",
+                contentType: "application/json",
+                headers: {
+                    "Authorization": getCookie("bearer"),
+                },
+            }).done(function (data) {
+                app.usuario = jsonToUsuario(data);
+                Swal.fire('Sucesso!', 'A assinatura foi modificada', 'success')
+            }).fail(handleError);
+        },
     },
 });
 
@@ -280,26 +321,7 @@ if (acao === "Alterar") {
             "Authorization": getCookie("bearer"),
         }
     }).done(function (json) {
-        app.usuario = {
-            "nome": json.nome,
-            "email": json.email,
-            "senha": "",
-            "cpf": json.cpf,
-            "nascimento": json.nascimento,
-
-            "enderecoRua": json.endereco.rua,
-            "enderecoNumero": json.endereco.numero,
-            "enderecoBairro": json.endereco.bairro,
-            "enderecoCep": json.endereco.cep,
-            "enderecoCidade": json.endereco.cidade,
-            "enderecoEstado": json.endereco.estado,
-
-            "cartaoCreditoNumero": json.cartaoCredito.numero,
-            "cartaoCreditoTitular": json.cartaoCredito.titular,
-            "cartaoCreditoExpiracao": json.cartaoCredito.expiracao,
-            "cartaoCreditoCVV": json.cartaoCredito.cvv,
-            "cartaoCreditoBandeira": json.cartaoCredito.bandeira
-        };
+        app.usuario = jsonToUsuario(json);
     }).fail(handleError);
 }
         </script>

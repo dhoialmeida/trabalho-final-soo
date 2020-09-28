@@ -66,6 +66,28 @@ public class UsuarioResource {
         usuario = usuarioService.save(usuario);
         return usuario;
     }
+    
+    @PatchMapping("/ativar/{id}")
+    public ResponseEntity<Usuario> ativarAssinatura(@PathVariable(value = "id") Long id) {
+        Usuario usuario = usuarioService.getOne(id);
+        if (usuario != null) {
+            usuario.getAssinatura().setAssinaturaAtiva(true);
+            usuarioService.save(usuario);
+            return ResponseEntity.ok(usuario);
+        }
+        return ResponseEntity.status(404).body(null);
+    }
+    
+    @PatchMapping("/desativar/{id}")
+    public ResponseEntity<Usuario> desativarAssinatura(@PathVariable(value = "id") Long id) {
+        Usuario usuario = usuarioService.getOne(id);
+        if (usuario != null) {
+            usuario.getAssinatura().setAssinaturaAtiva(false);
+            usuarioService.save(usuario);
+            return ResponseEntity.ok(usuario);
+        }
+        return ResponseEntity.status(404).body(null);
+    }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Usuario> update(@PathVariable(value = "id") Long id, @RequestBody UsuarioDTO usuarioDTO) {

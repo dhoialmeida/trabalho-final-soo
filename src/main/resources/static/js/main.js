@@ -8,6 +8,31 @@ function getCookie(name) {
     return match ? match[1] : null;
 }
 
+function jsonToUsuario(json) {
+    return {
+        "nome": json.nome,
+        "email": json.email,
+        "senha": "",
+        "cpf": json.cpf,
+        "nascimento": json.nascimento,
+
+        "enderecoRua": json.endereco.rua,
+        "enderecoNumero": json.endereco.numero,
+        "enderecoBairro": json.endereco.bairro,
+        "enderecoCep": json.endereco.cep,
+        "enderecoCidade": json.endereco.cidade,
+        "enderecoEstado": json.endereco.estado,
+
+        "cartaoCreditoNumero": json.cartaoCredito.numero,
+        "cartaoCreditoTitular": json.cartaoCredito.titular,
+        "cartaoCreditoExpiracao": json.cartaoCredito.expiracao,
+        "cartaoCreditoCVV": json.cartaoCredito.cvv,
+        "cartaoCreditoBandeira": json.cartaoCredito.bandeira,
+
+        assinatura: json.assinatura,
+    }
+}
+
 function handleError(res) {
     if (res.status === 403) {
         return Swal.fire({

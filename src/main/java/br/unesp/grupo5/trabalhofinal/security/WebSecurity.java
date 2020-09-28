@@ -21,9 +21,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/api/usuario/").permitAll()
-                .antMatchers(HttpMethod.PATCH, "/api/usuario/*").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/api/usuario/*").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/usuario/get/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/usuario/**").hasAnyAuthority("funcionario", "usuario")
+                .antMatchers(HttpMethod.PATCH, "/api/usuario/**").hasAnyAuthority("funcionario", "usuario")
+                .antMatchers(HttpMethod.GET, "/api/usuario/get/**").hasAnyAuthority("funcionario", "usuario")
                 .antMatchers(HttpMethod.GET, "/api/conteudo/**").hasAnyAuthority("funcionario", "usuario")
                 .antMatchers(HttpMethod.GET, "/api/serie/**").hasAnyAuthority("funcionario", "usuario")
                 .antMatchers(HttpMethod.GET, "/api/genero/**").hasAnyAuthority("funcionario", "usuario")
