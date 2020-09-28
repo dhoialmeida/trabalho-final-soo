@@ -8,6 +8,7 @@ import br.unesp.grupo5.trabalhofinal.service.AvaliacaoService;
 import br.unesp.grupo5.trabalhofinal.service.ConteudoService;
 import br.unesp.grupo5.trabalhofinal.service.UsuarioService;
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -59,6 +60,20 @@ public class AvaliacaoResource {
             Avaliacao avaliacao = avaliacaoService.findByUsuarioAndConteudo(usuario, conteudo);
             if (avaliacao != null) {
                 return ResponseEntity.ok(avaliacao);
+            }
+        }
+        return ResponseEntity.status(404).body(null);
+    }
+    
+    @GetMapping("/recomendacao/{user}-on-{content}")
+    public ResponseEntity<List<Conteudo>> getRecomendacao(@PathVariable(value = "user") Long user, @PathVariable(value = "content") Long content) {
+        Usuario usuario = usuarioService.getOne(user);
+        Conteudo conteudo = conteudoService.getOne(content);
+        if (usuario != null && conteudo != null) {
+            Avaliacao avaliacao = avaliacaoService.findByUsuarioAndConteudo(usuario, conteudo);
+            if (avaliacao != null) {
+                List<Conteudo> conteudos = avaliacaoService.getRecommendations(avaliacao.getNota(), conteudo);
+                return ResponseEntity.ok(conteudos);
             }
         }
         return ResponseEntity.status(404).body(null);

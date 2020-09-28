@@ -224,6 +224,10 @@ html.home-landing-page {
     padding-left: 10px;
 }
 
+.btn-recomendacao {
+    padding-right: 10px !important;
+}
+
 /*
  * Header
  */
